@@ -3,6 +3,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login/Login';
+import Preview from './components/Preview/Preview';
 
 function setToken(userToken) {
   localStorage.setItem('token', JSON.stringify(userToken));
@@ -13,30 +14,28 @@ function getToken() {
   const sessionTokenString = sessionStorage.getItem('token');
   const localStorageTokenString = localStorage.getItem('token');
   const sessionUserToken = JSON.parse(sessionTokenString);
-  return { session: sessionUserToken?.token, local: localStorageTokenString?.token };
+  const localStorageToken = JSON.parse(localStorageTokenString);
+  return { session: sessionUserToken?.token, local: localStorageToken?.token };
 }
 
 function App() {
   const token = getToken();
 
-  if (!token) {
+  if (!token.session && !token.local) {
     return <Login setToken={setToken} />;
   }
 
-  const logout = () => {
-    setToken('');
-    window.history.pushState({}, '', '/login');
-    window.location.reload();
-  };
-
   return (
     <div className="App">
-      <h1>Create a drag and drop video experience</h1>
-      <Routes>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="login" element={<Login setToken={setToken} />} />
-      </Routes>
-      <button type="button" onClick={logout}>Logout</button>
+      {token ? (
+        <>
+          <Routes>
+            <Route path="/" element={<Dashboard setToken={setToken} />} />
+            <Route path="/login" element={<Login setToken={setToken} />} />
+            <Route path="/preview" element={<Preview />} />
+          </Routes>
+        </>
+      ) : <Login setToken={setToken} /> }
     </div>
   );
 }
