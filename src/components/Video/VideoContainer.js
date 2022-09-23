@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function VideoContainer() {
-  const [file, setFile] = useState('');
+  const [videoFile, setVideoFile] = useState('');
+  const [url, setUrl] = useState('');
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (!file) return;
+    setVideoFile(URL.createObjectURL(file));
   };
 
   const handleNavigate = () => {
-    navigate('/preview');
+    navigate('/preview', { state: { link: videoFile, youtube: url } });
   };
-
-  console.log(file);
 
   return (
     <div className="video">
@@ -21,15 +22,21 @@ function VideoContainer() {
         <label htmlFor="link" className="vidlink-form">
           Url Link:
           <div className="input-container">
-            <input type="text" placeholder="Enter Youtube video url link or upload video from your computer" name="link" className="form-control" aria-describedby="inputGroup-sizing-default" />
+            <input
+              type="text"
+              placeholder="Enter Youtube video url link or upload video from your computer"
+              name="link"
+              className="form-control form-control-sm"
+              aria-describedby="inputGroup-sizing-default"
+              onChange={(e) => setUrl(e.target.value)}
+            />
           </div>
         </label>
         <label htmlFor="file">
           <input
             type="file"
-            id="file"
-            accept=".png, .jpeg, .jpg"
-            onChange={handleFileChange}
+            accept="image/*,audio/*,gif/*,video/mp4,video/x-m4v,video/*"
+            onChange={(e) => handleFileChange(e)}
           />
         </label>
       </div>
