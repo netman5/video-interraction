@@ -1,4 +1,6 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 function Draggable() {
   const [dragElements, setDragElements] = useState([]);
@@ -10,11 +12,13 @@ function Draggable() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const element = createElemnt.current.value;
-    setDragElements((current) => [...current, ...[element]]);
+    const elementObj = {
+      id: uuidv4(),
+      title: element,
+    };
+    setDragElements([...dragElements, elementObj]);
     createElemnt.current.value = '';
   };
-
-  console.log(dragElements);
 
   return (
     <div className="drag">
@@ -26,6 +30,14 @@ function Draggable() {
           ref={createElemnt}
         />
         <button type="button" onClick={(e) => handleSubmit(e)} className="btn btn-outline-primary">Create Element</button>
+      </div>
+
+      <div>
+        {dragElements && dragElements.map((el) => (
+          <ul key={el.id}>
+            <li>{el.title}</li>
+          </ul>
+        ))}
       </div>
     </div>
   );
