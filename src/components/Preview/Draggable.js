@@ -9,6 +9,7 @@ function Draggable() {
   // const dragOverItem = useRef();
   const createElemnt = useRef();
   const elementType = useRef();
+  const image = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +36,13 @@ function Draggable() {
   //   } // end switch
   // };
 
-  const createElement = (type, title) => React.createElement(type, {}, title);
+  const createElement = (type, title) => {
+    if (type === 'img') {
+      <input type="text" placeholder="image url" ref={image} />;
+      return <img src={image} alt={title} />;
+    }
+    return React.createElement(type, {}, title);
+  };
 
   return (
     <div className="drag">
@@ -51,6 +58,9 @@ function Draggable() {
           placeholder="Element type h1, h2, h3, p, span"
           ref={elementType}
         />
+
+        {/* {elementType === 'img' && <input type="text" placeholder="image url" ref={image} />} */}
+
         <button
           type="button"
           onClick={(e) => handleSubmit(e)}
