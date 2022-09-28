@@ -35,11 +35,14 @@ function Draggable() {
   //       return <p>{title}</p>;
   //   } // end switch
   // };
+  const createImage = (type, title) => {
+    const img = React.createElement(type, { src: image, alt: title });
+    return img;
+  };
 
   const createElement = (type, title) => {
     if (type === 'img') {
-      <input type="text" placeholder="image url" ref={image} />;
-      return <img src={image} alt={title} />;
+      return createImage(type, title);
     }
     return React.createElement(type, {}, title);
   };
@@ -50,16 +53,14 @@ function Draggable() {
       <div className="elements">
         <input
           type="text"
-          placeholder="create new element"
-          ref={createElemnt}
-        />
-        <input
-          type="text"
           placeholder="Element type h1, h2, h3, p, span"
           ref={elementType}
         />
-
-        {/* {elementType === 'img' && <input type="text" placeholder="image url" ref={image} />} */}
+        {elementType.current && elementType.current.value === 'img' ? (
+          <input type="file" ref={image} />
+        ) : (
+          <input type="text" placeholder="Element title" ref={createElemnt} />
+        )}
 
         <button
           type="button"
@@ -73,7 +74,7 @@ function Draggable() {
       <div>
         {dragElements && dragElements.map((el) => (
           <div key={el.id} draggable>
-            {createElement(el.type, el.title)}
+            {createElement(el.type, el.title || image)}
           </div>
         ))}
       </div>
